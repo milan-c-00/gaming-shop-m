@@ -11,9 +11,9 @@ class AuthService {
 
         $user = new User;
 
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = bcrypt($request->password);
+        $user->name = $request['name'];
+        $user->email = $request['email'];
+        $user->password = bcrypt($request['password']);
         $user->role = 0;
 
         $user->save();
@@ -24,8 +24,8 @@ class AuthService {
 
     public function login($request){
 
-        $email = $request->email;
-        $password = $request->password;
+        $email = $request['email'];
+        $password = $request['password'];
 
         $user = User::query()->where('email', $email)->first();
 

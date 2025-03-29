@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Http\Services\AuthService;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -17,9 +19,9 @@ class AuthController extends Controller
         $this->authService = $authService;
     }
 
-    public function register(Request $request) {
+    public function register(RegisterRequest $request) {
 
-        $user = $this->authService->register($request);
+        $user = $this->authService->register($request->validated());
 
         if(!$user)
            return response()->json(["message" => "Error!"], ResponseAlias::HTTP_UNPROCESSABLE_ENTITY);
@@ -28,9 +30,9 @@ class AuthController extends Controller
 
     }
 
-    public function login(Request $request) {
+    public function login(LoginRequest $request) {
 
-        $token = $this->authService->login($request);
+        $token = $this->authService->login($request->validated());
 
         if(!$token)
             return response()->json(["message" => "Invalid credentials!"], ResponseAlias::HTTP_UNAUTHORIZED);
