@@ -4,9 +4,10 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Http\Services\ProductService;
 use App\Models\Product;
-use Illuminate\Http\Client\Request;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 
@@ -17,7 +18,7 @@ class ProductController extends Controller
     public function __construct(ProductService $productService) {
         $this->productService = $productService;
     }
-    public function index() {
+    public function index(Request $request) {
 
         $products = $this->productService->index();
 
@@ -27,9 +28,9 @@ class ProductController extends Controller
 
     }
 
-    public function show(Request $request) {
+    public function show($product) {
 
-        $product = $this->productService->show($request);
+        $product = $this->productService->show($product);
 
         if(!$product)
             return response()->json(["message" => "Product not found!"], ResponseAlias::HTTP_NOT_FOUND);
@@ -46,13 +47,19 @@ class ProductController extends Controller
 
     }
 
-    public function update() {
+    public function update(UpdateProductRequest $request, $product) {
+
+        $updated = $this->productService->update($request->validated(), $product);
+
+        if(!$updated)
+            return response()->json(["message" => "Update failed!"], ResponseAlias::HTTP_UNPROCESSABLE_ENTITY);
+        return response()->json(["message" => "Product updated!"], ResponseAlias::HTTP_OK);
 
     }
 
-    public function destroy() {
+    public function destroy($product) {
 
-        $deleted = $this->productService->destroy();
+        $deleted = $this->productService->destroy($product);
 
         if(!$deleted)
             return response()->json(["message" => "Delete failed!"], ResponseAlias::HTTP_UNPROCESSABLE_ENTITY);
