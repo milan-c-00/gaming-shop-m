@@ -3,6 +3,7 @@
 use App\Http\Controllers\api\AuthController;
 use App\Http\Controllers\api\ProductController;
 use App\Http\Controllers\TestController;
+use App\Http\Middleware\CheckRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,17 +17,20 @@ Route::get('/login', function () {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::apiResource('/products', ProductController::class)->except('/index');   // All routes in /products
+    Route::apiResource('/products', ProductController::class)->except('/index', '/show')
+        ->middleware(CheckRole::class.':admin');   // All routes in /products
 //    Route::post('/products', [ProductController::class, 'store']);
 //    Route::get('/products/{product}', [ProductController::class, 'show']);
 //    Route::put('/products/{product}', [ProductController::class, 'update']);
 //    Route::delete('/products/{product}', [ProductController::class, 'destroy']);
-
+    Route::middleware(CheckRole::class.':user')->group(function() {
+       Route::get('/cart', [CartController::class, '/show']);
+    });
 
 });
 
 Route::get('/products', [ProductController::class, 'index']);   // Route goes after apiResource because of errors
-
+Route::get('/products/{product}', [ProductController::class, 'show']);
 
 
 Route::get('/user', function (Request $request) {
