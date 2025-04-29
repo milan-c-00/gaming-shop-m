@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AddToCartRequest;
+use App\Http\Requests\UpdateCartRequest;
 use App\Http\Services\CartService;
 use http\Env\Response;
 use Illuminate\Http\Request;
@@ -18,7 +20,7 @@ class CartController extends Controller
         $this->cartService = $cartService;
     }
 
-    public function add(Request $request) {
+    public function add(AddToCartRequest $request) {
 
         $response = $this->cartService->add($request);
 
@@ -38,7 +40,7 @@ class CartController extends Controller
 
     }
 
-    public function update($cart, Request $request) {
+    public function update($cart, UpdateCartRequest $request) {
 
         $response = $this->cartService->update($cart, $request);
 
@@ -48,9 +50,9 @@ class CartController extends Controller
 
     }
 
-    public function remove($cart) {
+    public function remove($cart, Request $request) {
 
-        $removed = $this->cartService->remove($cart);
+        $removed = $this->cartService->remove($cart, $request);
 
         if(!$removed)
             return response()->json(["message" => "Error!"], ResponseAlias::HTTP_UNPROCESSABLE_ENTITY);
