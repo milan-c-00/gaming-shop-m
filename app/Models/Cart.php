@@ -15,8 +15,8 @@ class Cart extends Model
         'status'
     ];
 
-    protected $casts = [
-        'items' => 'array'
-    ];
+//    protected $casts = [
+//        'items' => 'array'
+//    ];
 
 }

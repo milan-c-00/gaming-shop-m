@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\api\AuthController;
+use App\Http\Controllers\api\CartController;
 use App\Http\Controllers\api\ProductController;
 use App\Http\Controllers\TestController;
 use App\Http\Middleware\CheckRole;
@@ -24,7 +25,10 @@ Route::middleware('auth:sanctum')->group(function () {
 //    Route::put('/products/{product}', [ProductController::class, 'update']);
 //    Route::delete('/products/{product}', [ProductController::class, 'destroy']);
     Route::middleware(CheckRole::class.':user')->group(function() {
-       Route::get('/cart', [CartController::class, '/show']);
+       Route::get('/cart/{cart}', [CartController::class, 'show']);
+       Route::post('/cart', [CartController::class, 'add']);
+       Route::put('/cart/{cart}', [CartController::class, 'update']);
+       Route::delete('/cart/{cart}', [CartController::class, 'clear']);
     });
 
 });
